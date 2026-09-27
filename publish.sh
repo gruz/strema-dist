@@ -19,6 +19,13 @@ sha256sum dzyga dzyga_web > SHA256SUMS.txt
 cat SHA256SUMS.txt
 
 TAG="${1:-}"
+# No-op when the binaries are identical to the latest release — otherwise
+# every run would mint a new tag with the same payloads.
+remote_sums=$(curl -fsSL "https://github.com/$REPO/releases/latest/download/SHA256SUMS.txt" 2>/dev/null || true)
+if [ -z "$TAG" ] && [ -n "$remote_sums" ] && [ "$remote_sums" = "$(cat SHA256SUMS.txt)" ]; then
+    echo "✅ Binaries unchanged — the latest release already has them. Nothing to do."
+    exit 0
+fi
 if [ -z "$TAG" ]; then
     last=$(gh release list --repo "$REPO" --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || true)
     if [ -n "$last" ]; then
