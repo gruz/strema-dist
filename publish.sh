@@ -1,5 +1,5 @@
 #!/bin/bash
-# Publish the dzyga/dzyga_web binaries in this directory as a GitHub release
+# Publish the helper binaries in this directory as a GitHub release
 # of gruz/strema-dist. Regenerates SHA256SUMS.txt automatically — install.sh
 # on devices uses it both to detect non-canonical on-device builds and to
 # verify downloaded assets, so it must always be part of the release.
@@ -40,7 +40,7 @@ if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
     echo "✅ Assets updated on existing release $TAG"
 else
     gh release create "$TAG" dzyga dzyga_web SHA256SUMS.txt --repo "$REPO" \
-        --title "Dzyga binaries $TAG" \
+        --title "strema helper binaries $TAG" \
         --notes "$(md5sum dzyga dzyga_web)"
     echo "✅ Release $TAG published"
 fi
